@@ -7,6 +7,10 @@ Gabriele Proni | <me@gabrieleproni.com> | [github](https://github.com/MrGab)
 ## Description
 CGRateS Docker Container working out of the box (in prepaid mode) with MySQL, Redis and FreeSWITCH. There is also a phpmyadmin container to access the db by web gui.
 
+**Please Note**
+
+The CGRateS installation is performed via .deb file because the last release and apt repository is not updated. If you want to install the very last deb from master, just update cgrates/installer.deb
+
 ## Environment
 In order to run the docker-compose, you should setup four environment variable below:
 * `CGR_MYSQL_ROOT_PASSWORD` : password for the user "root" in mysql
