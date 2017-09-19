@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<include>
+
+	<context name="public">
+
+		<!-- CGRATES: Set cgr-account and cgr-subject -->
+                <extension name="CGRateS_setAccount" continue="true">
+			<condition>
+				<action application="set" data="cgr_account=${sip_from_host}"/>
+				<action application="set" data="cgr_subject=${caller_id_number}"/>
+        			<!-- cgr_reqtype can be prepaid or postpaid -->
+				<action inline="true" application="set" data="cgr_reqtype=prepaid"/>
+			</condition>
+		</extension>
+                
+
+		<!-- CGRATES: Place all prepaid requests into park app. Notify must be empty so we do not loop. -->
+		
+                <extension name="CGRateS_AuthPrepaid">
+			<condition field="${cgr_reqtype}" expression="^prepaid$|^pseudoprepaid$" />
+			<condition field="${cgr_notify}" expression="^$">
+				<action application="park"/>
+			</condition>
+		</extension>
+
+                <!-- CGRATES: In case of CGRateS returning UNAUTHORIZED_DESTINATION, disconnect the call with 403.-->
+
+                <extension name="CGRateS_AuthForbidden_unauthorized_destination">
+                        <condition field="${cgr_reqtype}" expression="^prepaid$|^pseudoprepaid$" />
+                        <condition field="${cgr_notify}" expression="^-UNAUTHORIZED_DESTINATION$">
+                                <action application="log" data="INFO CGrateS error for account: ${cgr_account} [${cgr_notify}]"/>
+                                <action application="set" data="proto_specific_hangup_cause=sip:403"/>
+                                <action application="hangup"/>
+                        </condition>
+                </extension>
+                
+
+		<!-- CGRATES: In case of CGRateS returning INSUFFICIENT_FUNDS, disconnect the call with 403. -->
+		
+                <extension name="CGRateS_AuthForbidden_insufficient_funds">
+			<condition field="${cgr_reqtype}" expression="^prepaid$|^pseudoprepaid$" />
+			<condition field="${cgr_notify}" expression="^-INSUFFICIENT_FUNDS$">
+				<action application="log" data="INFO CGrateS error for account: ${cgr_account} [${cgr_notify}]"/>
+				<action application="set" data="proto_specific_hangup_cause=sip:403"/>
+				<action application="hangup"/>
+			</condition>
+		</extension>
+                
+
+		<!-- CGRATES: In case of CGRateS returning SYSTEM_ERROR, disconnect the call so we do not risk prepaid calls going out. -->
+	        
+                <extension name="CGRateS_Error">
+			<condition field="${cgr_reqtype}" expression="^prepaid$|^pseudoprepaid$" />
+			<condition field="${cgr_notify}" expression="^-SYSTEM_ERROR$">
+                                <action application="log" data="INFO CGrateS error for account: ${cgr_account}  [${cgr_notify}]"/>
+				<action application="set" data="proto_specific_hangup_cause=sip:503"/>
+				<action application="hangup"/>
+			</condition>
+		</extension>
+                
+
+		<!-- VOVERC: We are ready to call -->
+		<extension name="PSTN">
+			<condition field="destination_number" expression="^(.*)$" >
+				<action application="set" data="bypass_media=true"/>
+				<action application="bridge" data="sofia/gateway/your_sip_gateway/$1"/>
+				<action application="hangup"/>
+			</condition>   
+		</extension>
+
+  </context>
+
+</include>

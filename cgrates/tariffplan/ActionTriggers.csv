@@ -1,0 +1,1 @@
+#Tag[0],UniqueId[1],ThresholdType[2],ThresholdValue[3],Recurrent[4],MinSleep[5],BalanceTag[6],BalanceType[7],BalanceDirection[8],BalanceCategory[9],BalanceDestinationId[10],BalanceRatingSubject[11],BalanceSharedGroup[12],BalanceExpiryTime[13],BalanceTimingIds[14],BalanceWeight[15],BalanceDisabled[16],StatsMinQueuedItems[17],ActionsId[18],Weight[19]

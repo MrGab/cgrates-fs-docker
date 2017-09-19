@@ -1,0 +1,10 @@
+<include>
+    <!-- Gateway Template
+    <gateway name="gateway_name">
+        <param name="username" value="username" />
+        <param name="password" value="password" />
+        <param name="proxy" value="domain" />
+        <param name="ping" value="25"/>
+    </gateway>
+     -->
+</include>

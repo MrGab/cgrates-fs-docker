@@ -1,0 +1,54 @@
+version: '3'
+services:
+  cgrates:
+    build: cgrates
+    restart: always
+    environment:
+    - MYSQL_DATABASE=${CGR_MYSQL_DATABASE}
+    - MYSQL_USER=${CGR_MYSQL_USER}
+    - MYSQL_PASSWORD=${CGR_MYSQL_PASSWORD}
+    ports:
+      - 2080:2080
+    volumes:
+    - ./cgrates/tariffplan:/tariffplan
+  redis-cgr:
+    image: redis:latest
+    restart: always
+    command: redis-server
+    volumes:
+    - redis-cgr-data:/data
+    ports:
+      - 6379:6379
+  mysql-cgr:
+    build: mysql-cgr
+    restart: always
+    environment:
+    - MYSQL_ROOT_PASSWORD=${CGR_MYSQL_ROOT_PASSWORD}
+    - MYSQL_DATABASE=${CGR_MYSQL_DATABASE}
+    - MYSQL_USER=${CGR_MYSQL_USER}
+    - MYSQL_PASSWORD=${CGR_MYSQL_PASSWORD}
+    ports:
+    - 3306:3306
+    volumes:
+    - mysql-cgr-data:/var/lib/mysql
+  freeswitch-cgr:
+    build: freeswitch-cgr
+    restart: always
+    environment:
+    - FREESWITCH_DISABLE_NAT_DETECTION=false
+    - FREESWITCH_RTP_START_PORT=16384
+    - FREESWITCH_RTP_END_PORT=16584
+    - ERLANG_COOKIE=test-cookie
+    ports:
+    - 5060:5060/udp
+    - 16384-16584:16384-16584/udp
+  phpmyadmin:
+    environment:
+    - PMA_HOSTS=mysql-cgr
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+    - 4000:80
+volumes:
+  mysql-cgr-data:
+  redis-cgr-data:

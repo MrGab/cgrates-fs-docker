@@ -1,0 +1,2 @@
+# Id,DestinationId,RatesTag,RoundingMethod,RoundingDecimals,MaxCost,MaxCostStrategy
+DR_RETAIL,UNITED_STATES,TPE1100,*up,2,0,
