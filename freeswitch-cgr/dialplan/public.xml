@@ -60,7 +60,7 @@
 		</extension>
                 
 
-		<!-- VOVERC: We are ready to call -->
+		<!-- We are ready to call -->
 		<extension name="PSTN">
 			<condition field="destination_number" expression="^(.*)$" >
 				<action application="set" data="bypass_media=true"/>
