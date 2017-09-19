@@ -1,6 +1,6 @@
 FROM callforamerica/freeswitch
 
-MAINTAINER Gabriele Proni <g.proni@voverc.com>
+MAINTAINER Gabriele Proni <me@gabrieleproni.com>
 
 COPY sip_profiles /etc/freeswitch/sip_profiles/
 COPY dialplan /etc/freeswitch/dialplan/
